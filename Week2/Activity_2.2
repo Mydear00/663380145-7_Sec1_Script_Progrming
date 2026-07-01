@@ -1,20 +1,23 @@
-Block B: Vectorized Filter
+🎮 ชื่อเกม: ผจญภัยในปราสาทลึกลับ (The Mystery Castle)
 
-phrase = "Python 2026 Engine"
+(Flowchart)
 
-consonants = {c.lower() for c in phrase
-              if c.isalpha() and c.lower() not in 'aeiou'}
 
-print(f"Unique consonants: {consonants}")
+        [ เริ่มต้นเกม ]
+             │
+             ▼
+       เลือกประตูไหนดี?
+       /           \
+   [ ประตูทอง ]    [ ประตูเงิน ]
+       │               │
+       ▼               ▼
+  (เจอหีบสมบัติ)    (เจอมังกรหลับ)
+       │               │
+       ▼               ▼
+   เปิดหีบไหม?       สู้หรือหนี?
+   /       \        /        \
+[เปิด]    [ไม่เปิด] [สู้]      [หนี]
+  │          │      │         │
+  ▼          ▼      ▼         ▼
+ชนะ!       เกมจบ   แพ้!       รอดตาย!
 
-ลำดับการทำงาน
-
-กำหนดข้อความ "Python 2026 Engine"
-เลือกเฉพาะตัวอักษรภาษาอังกฤษ
-ตัดสระ (a, e, i, o, u) ออก
-แปลงเป็นตัวพิมพ์เล็ก
-เก็บใน set จึงไม่มีตัวซ้ำ
-
-Output
-
-Unique consonants: {'p', 'y', 't', 'h', 'n', 'g'}
