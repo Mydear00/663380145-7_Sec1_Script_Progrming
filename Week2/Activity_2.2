@@ -1,0 +1,20 @@
+Block B: Vectorized Filter
+
+phrase = "Python 2026 Engine"
+
+consonants = {c.lower() for c in phrase
+              if c.isalpha() and c.lower() not in 'aeiou'}
+
+print(f"Unique consonants: {consonants}")
+
+ลำดับการทำงาน
+
+กำหนดข้อความ "Python 2026 Engine"
+เลือกเฉพาะตัวอักษรภาษาอังกฤษ
+ตัดสระ (a, e, i, o, u) ออก
+แปลงเป็นตัวพิมพ์เล็ก
+เก็บใน set จึงไม่มีตัวซ้ำ
+
+Output
+
+Unique consonants: {'p', 'y', 't', 'h', 'n', 'g'}
