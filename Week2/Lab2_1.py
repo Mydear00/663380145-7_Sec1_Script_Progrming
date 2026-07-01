@@ -1,4 +1,3 @@
-#แก้ไขโค้ดนี้ให้ถูกต้อง
 
 num = int(input("Enter a number: ") )
 if num < 0:
