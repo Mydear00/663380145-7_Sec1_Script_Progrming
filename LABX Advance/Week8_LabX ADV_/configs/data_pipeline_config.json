@@ -1,0 +1,97 @@
+﻿{
+    "project_name": "Week 8 - Agentic Data Processing",
+    "stop_on_error": true,
+    "tasks": [
+        {
+            "type": "load_csv",
+            "file_path": "data/input_sales.csv",
+            "output_key": "raw_sales_data"
+        },
+        {
+            "type": "aggregate_csv",
+            "input_key": "raw_sales_data",
+            "group_by_field": "Customer",
+            "aggregate_field": "Amount",
+            "operation": "sum",
+            "output_key": "customer_sales_summary"
+        },
+        {
+            "type": "save_csv",
+            "input_key": "customer_sales_summary",
+            "file_path": "data/processed_sales_by_customer.csv",
+            "fieldnames": ["Customer", "Total_Amount"]
+        },
+        {
+            "type": "csv_to_json",
+            "input_key": "raw_sales_data",
+            "output_key": "raw_sales_json"
+        },
+        {
+            "type": "save_json",
+            "input_key": "raw_sales_json",
+            "file_path": "data/sales_data.json",
+            "indent": 4
+        },
+        {
+            "type": "load_json",
+            "file_path": "data/input_inventory.json",
+            "output_key": "raw_inventory_data"
+        },
+        {
+            "type": "update_json",
+            "input_key": "raw_inventory_data",
+            "output_key": "updated_inventory_data",
+            "updates": [
+                {
+                    "path": "0.stock",
+                    "value": 75,
+                    "operation": "set"
+                },
+                {
+                    "path": "1.details.layout",
+                    "value": "UK ISO",
+                    "operation": "set"
+                },
+                {
+                    "path": "2.details.dpi",
+                    "value": 2000,
+                    "operation": "set"
+                },
+                {
+                    "path": "",
+                    "value": {
+                        "id": "PROD004",
+                        "name": "Smart Speaker",
+                        "category": "Audio",
+                        "stock": 40,
+                        "details": {
+                            "brand": "SoundGenius",
+                            "features": [
+                                "Voice Assistant",
+                                "Multi-room"
+                            ]
+                        }
+                    },
+                    "operation": "add_to_list"
+                },
+                {
+                    "path": "PROD001.details.color",
+                    "value": "Space Grey",
+                    "operation": "set"
+                }
+            ]
+        },
+        {
+            "type": "query_json",
+            "input_key": "updated_inventory_data",
+            "path": "0.details.brand",
+            "output_key": "queried_product_brand"
+        },
+        {
+            "type": "save_json",
+            "input_key": "updated_inventory_data",
+            "file_path": "data/updated_inventory.json",
+            "indent": 2
+        }
+    ]
+}
