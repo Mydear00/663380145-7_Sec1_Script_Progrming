@@ -2,7 +2,7 @@
 # File: main_program.py
 
 # นำเข้าโมดูลที่สร้างขึ้นเอง
-import my_utils
+import Lab.Week6.my_utils as my_utils
 
 # นำเข้าโมดูลมาตรฐานสำหรับคำนวณทางคณิตศาสตร์
 import math
