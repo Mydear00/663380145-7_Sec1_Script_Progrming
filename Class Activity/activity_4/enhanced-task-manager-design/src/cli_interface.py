@@ -1,3 +1,4 @@
+
 """Command-line user interface."""
 
 import datetime
@@ -17,9 +18,9 @@ class CLIInterface:
         print("4. List All Tasks")
         print("5. Complete Task")
         print("6. Delete Task")
-        print("7. Search Tasks (Placeholder)")
-        print("8. Filter Tasks (Placeholder)")
-        print("9. Sort Tasks (Placeholder)")
+        print("7. Search Tasks")
+        print("8. Filter Tasks")
+        print("9. Sort Tasks")
         print("0. Exit")
         print("----------------------------------")
 
@@ -42,7 +43,7 @@ class CLIInterface:
             ).strip()
 
             try:
-                datetime.datetime.strptime(date_text, "%Y-%m-%d")
+                datetime.date.fromisoformat(date_text)
                 return date_text
             except ValueError:
                 print(
@@ -73,7 +74,7 @@ class CLIInterface:
             if tag.strip()
         ]
 
-        # Remove duplicate tags while preserving their order.
+        # Remove duplicate tags while preserving order.
         return list(dict.fromkeys(tags))
 
     def _get_task_id(self, prompt):
@@ -89,7 +90,92 @@ class CLIInterface:
             print("Invalid input. Please enter a positive Task ID.")
             return None
 
+    def _display_tasks(self, tasks, heading="Tasks"):
+        """Display a list of tasks or a no-results message."""
+        if not tasks:
+            print("No tasks found.")
+            return
+
+        print(f"\n--- {heading} ---")
+
+        for task in tasks:
+            print(task)
+
+        print("-" * (len(heading) + 8))
+
+    def _search_tasks(self):
+        keyword = input("Enter search keyword: ").strip()
+
+        if not keyword:
+            print("Search keyword cannot be empty.")
+            return
+
+        tasks = self.manager.search_tasks(keyword)
+        self._display_tasks(tasks, "Search Results")
+
+    def _filter_tasks(self):
+        print("\n--- Filter Tasks ---")
+        print("Leave a field blank to skip that filter.")
+
+        status = input(
+            "Status (Pending/Completed): "
+        ).strip() or None
+
+        due_date_before = input(
+            "Due date on or before (YYYY-MM-DD): "
+        ).strip() or None
+
+        due_date_after = input(
+            "Due date on or after (YYYY-MM-DD): "
+        ).strip() or None
+
+        priority = input(
+            "Priority (High/Medium/Low): "
+        ).strip() or None
+
+        tags = input(
+            "Tags (comma-separated; task must have all tags): "
+        ).strip() or None
+
+        try:
+            tasks = self.manager.filter_tasks(
+                status=status,
+                due_date_before=due_date_before,
+                due_date_after=due_date_after,
+                priority=priority,
+                tags=tags,
+            )
+
+            self._display_tasks(tasks, "Filter Results")
+
+        except ValueError as error:
+            print(f"Filter error: {error}")
+
+    def _sort_tasks(self):
+        criterion = input(
+            "Sort by (id, description, status, due_date, priority; "
+            "default id): "
+        ).strip().lower() or "id"
+
+        direction = input(
+            "Descending order? (yes/no; default no): "
+        ).strip().lower()
+
+        reverse = direction in {"yes", "y"}
+
+        try:
+            tasks = self.manager.sort_tasks(
+                criterion=criterion,
+                reverse=reverse,
+            )
+
+            self._display_tasks(tasks, "Sorted Tasks")
+
+        except ValueError as error:
+            print(f"Sort error: {error}")
+
     def run(self):
+        """Run the main command-line menu."""
         while True:
             self.display_menu()
             choice = self.get_user_choice()
@@ -98,43 +184,43 @@ class CLIInterface:
                 description = self.get_task_description()
                 tags = self.get_tags_input()
 
-                task = self.manager.add_normal_task(
-                    description, tags=tags
-                )
-                print(f"Normal task added with ID {task.id}.")
+                try:
+                    task = self.manager.add_normal_task(
+                        description, tags=tags
+                    )
+                    print(f"Normal task added with ID {task.id}.")
+                except (ValueError, TypeError) as error:
+                    print(f"Could not add task: {error}")
 
             elif choice == "2":
                 description = self.get_task_description()
                 due_date = self.get_due_date_input()
                 tags = self.get_tags_input()
 
-                task = self.manager.add_due_date_task(
-                    description, due_date, tags=tags
-                )
-                print(f"Due-date task added with ID {task.id}.")
+                try:
+                    task = self.manager.add_due_date_task(
+                        description, due_date, tags=tags
+                    )
+                    print(f"Due-date task added with ID {task.id}.")
+                except (ValueError, TypeError) as error:
+                    print(f"Could not add task: {error}")
 
             elif choice == "3":
                 description = self.get_task_description()
                 priority = self.get_priority_input()
                 tags = self.get_tags_input()
 
-                task = self.manager.add_priority_task(
-                    description, priority, tags=tags
-                )
-                print(f"Priority task added with ID {task.id}.")
+                try:
+                    task = self.manager.add_priority_task(
+                        description, priority, tags=tags
+                    )
+                    print(f"Priority task added with ID {task.id}.")
+                except (ValueError, TypeError) as error:
+                    print(f"Could not add task: {error}")
 
             elif choice == "4":
                 tasks = self.manager.get_all_tasks()
-
-                if not tasks:
-                    print("No tasks found.")
-                else:
-                    print("\n--- Your Tasks ---")
-
-                    for task in tasks:
-                        print(task)
-
-                    print("------------------")
+                self._display_tasks(tasks, "Your Tasks")
 
             elif choice == "5":
                 task_id = self._get_task_id(
@@ -155,44 +241,13 @@ class CLIInterface:
                     print(message)
 
             elif choice == "7":
-                keyword = input("Enter search keyword: ").strip()
-                found_tasks = self.manager.search_tasks(keyword)
-
-                if found_tasks:
-                    print("\n--- Search Results ---")
-
-                    for task in found_tasks:
-                        print(task)
-                else:
-                    print(f"No tasks found matching {keyword!r}.")
+                self._search_tasks()
 
             elif choice == "8":
-                self.manager.filter_tasks()
-                print(
-                    "Filtering is a placeholder in this scaffold. "
-                    "See PLAN.md for details."
-                )
+                self._filter_tasks()
 
             elif choice == "9":
-                criterion = input(
-                    "Sort by (id, due_date, priority; default id): "
-                ).strip().lower() or "id"
-
-                reverse = (
-                    input("Reverse order (yes/no; default no): ")
-                    .strip()
-                    .lower() == "yes"
-                )
-
-                tasks = self.manager.sort_tasks(criterion, reverse)
-
-                if tasks:
-                    print("\n--- Sorted Tasks ---")
-
-                    for task in tasks:
-                        print(task)
-                else:
-                    print("No tasks found.")
+                self._sort_tasks()
 
             elif choice == "0":
                 print("Exiting Task Manager. Goodbye!")
