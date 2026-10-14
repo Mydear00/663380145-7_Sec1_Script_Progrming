@@ -1,0 +1,34 @@
+[
+    {
+        "id": 1,
+        "description": "Finish Week 11",
+        "completed": true,
+        "tags": [
+            "school",
+            "python"
+        ],
+        "_type": "Task"
+    },
+    {
+        "id": 2,
+        "description": "Submit Week 11 Assignment",
+        "completed": false,
+        "tags": [
+            "school",
+            "assignment"
+        ],
+        "_type": "DueDateTask",
+        "due_date": "2026-10-15"
+    },
+    {
+        "id": 3,
+        "description": "Prepare project presentation",
+        "completed": false,
+        "tags": [
+            "project",
+            "urgent"
+        ],
+        "_type": "PriorityTask",
+        "priority": "High"
+    }
+]
