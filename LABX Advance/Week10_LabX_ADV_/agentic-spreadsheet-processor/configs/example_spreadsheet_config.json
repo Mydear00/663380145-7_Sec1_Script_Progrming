@@ -1,0 +1,64 @@
+{
+  "input_file": "data/input_data.xlsx",
+  "output_file": "data/output_report.xlsx",
+  "tasks": [
+    {
+      "type": "copy_data",
+      "source_sheet": "SalesData",
+      "dest_sheet": "Raw Data"
+    },
+    {
+      "type": "calculate_column",
+      "sheet": "Raw Data",
+      "target_column": "D",
+      "header": "Total Revenue",
+      "start_row": 2,
+      "formula": "=B{row}*C{row}",
+      "number_format": "#,##0.00"
+    },
+    {
+      "type": "conditional_format",
+      "sheet": "Raw Data",
+      "range": "D2:D100",
+      "rule_type": "color_scale",
+      "min_color": "FFF8696B",
+      "mid_color": "FFFFEB84",
+      "max_color": "FF63BE7B"
+    },
+    {
+      "type": "calculate_column",
+      "sheet": "Raw Data",
+      "target_column": "E",
+      "header": "Status",
+      "start_row": 2,
+      "formula": "=IF(D{row}>1000,\"High Value\",\"Standard\")"
+    },
+    {
+      "type": "conditional_format",
+      "sheet": "Raw Data",
+      "range": "E2:E100",
+      "rule_type": "expression",
+      "formula": "$E2=\"High Value\"",
+      "fill_color": "FF92D050",
+      "font_color": "FF000000"
+    },
+    {
+      "type": "summary",
+      "source_sheet": "Raw Data",
+      "sheet": "Summary",
+      "product_column": "A",
+      "revenue_column": "D"
+    },
+    {
+      "type": "chart",
+      "sheet": "Summary",
+      "chart_type": "bar",
+      "data_range": "A1:B10",
+      "category_range": "A2:A10",
+      "title": "Product-wise Revenue",
+      "x_axis_title": "Product",
+      "y_axis_title": "Revenue",
+      "top_left_cell": "D2"
+    }
+  ]
+}
